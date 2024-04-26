@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import Layout from '../../../components/Layout'
 import axios from 'axios'
+import { useRouter } from 'next/navigation'
 
 export function NewProducts() {
   const [product, setProduct] = useState({
@@ -9,6 +10,7 @@ export function NewProducts() {
     description: '',
     price: 0,
   })
+  const router = useRouter()
 
   const handleChange = (value, field) => {
     setProduct((prev) => ({ ...prev, [field]: value }))
@@ -20,6 +22,7 @@ export function NewProducts() {
     const data = { title, description, price }
     try {
       await axios.post('/api/products', data)
+      router.push('/products')
     } catch (error) {
       console.log('Error', { error })
     }
