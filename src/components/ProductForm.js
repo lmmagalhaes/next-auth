@@ -8,6 +8,7 @@ export default function ProductForm({
   title: prevTitle,
   description: prevDescription,
   price: prevPrice,
+  images,
 }) {
   const [product, setProduct] = useState({
     title: prevTitle || '',
@@ -42,6 +43,17 @@ export default function ProductForm({
       }
     }
   }
+
+  const uploadImages = async (e) => {
+    const files = e.target.files
+    if (files?.length > 0) {
+      const data = new FormData()
+      for (const file of files) {
+        data.append('file', file)
+      }
+      const res = await axios.post('/api/upload', data)
+    }
+  }
   return (
     <form onSubmit={handleSubmit}>
       <label>Product name</label>
@@ -51,6 +63,28 @@ export default function ProductForm({
         value={product.title}
         onChange={(e) => handleChange(e.target.value, 'title')}
       />
+      <labe>Photos</labe>
+      <div className="mb-2">
+        <label className="w-24 h-24 cursor-pointer text-center flex items-center justify-center gap-1 text-sm text-gray-500 rounded-lg bg-gray-200">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-4 h-4"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"
+            />
+          </svg>
+          Upload
+          <input type="file" onChange={uploadImages} className="hidden" />
+        </label>
+        {!images?.length && <div>No photos in this product</div>}
+      </div>
       <label>Description</label>
       <textarea
         placeholder="Description"

@@ -24,13 +24,24 @@ export default function DeleteProductPage({ params }) {
     router.back()
   }
 
+  async function deleteProduct() {
+    await axios.delete(`/api/products?id=${id}`)
+    router.back()
+  }
+
   return (
     <Layout>
-      <h1>Do you really want to delete &nbsp; "{productInfo?.title}" ? </h1>
-      <button className="btn-red">Yes</button>
-      <button className="btn-default" onClick={goBack}>
-        No
-      </button>
+      <h1 className="text-center">
+        Do you really want to delete &nbsp; "{productInfo?.title}" ?{' '}
+      </h1>
+      <div className="flex gap-2 justify-center">
+        <button onClick={deleteProduct} className="btn-red">
+          Yes
+        </button>
+        <button className="btn-default" onClick={goBack}>
+          No
+        </button>
+      </div>
       {/* {productInfo && <ProductForm {...productInfo} />} */}
     </Layout>
   )
