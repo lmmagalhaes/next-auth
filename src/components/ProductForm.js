@@ -1,6 +1,6 @@
 'use client'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
 axios.defaults
 export default function ProductForm({
@@ -8,23 +8,40 @@ export default function ProductForm({
   title: prevTitle,
   description: prevDescription,
   price: prevPrice,
-  images,
+  images: existingImages,
 }) {
   const [product, setProduct] = useState({
     title: prevTitle || '',
     description: prevDescription || '',
     price: prevPrice || 0,
   })
+  const [images, setImages] = useState(existingImages || [])
   const router = useRouter()
 
   const handleChange = (value, field) => {
     setProduct((prev) => ({ ...prev, [field]: value }))
   }
 
+  const uploadImages = async (e) => {
+    const files = e.target.files
+    if (files?.length > 0) {
+      const data = new FormData()
+      for (const file of files) {
+        data.append('file', file)
+      }
+      const res = await axios.post('/api/upload', data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      setImages((oldImages) => {
+        return [...oldImages, ...res.data]
+      })
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     const { title, description, price } = product
-    const data = { title, description, price }
+    const data = { title, description, price, images }
     if (_id) {
       // update product
       try {
@@ -44,18 +61,6 @@ export default function ProductForm({
     }
   }
 
-  const uploadImages = async (e) => {
-    const files = e.target.files
-    if (files?.length > 0) {
-      const data = new FormData()
-      for (const file of files) {
-        data.append('file', file)
-      }
-      const res = await axios.post('/api/upload', data, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      })
-    }
-  }
   return (
     <form onSubmit={handleSubmit}>
       <label>Product name</label>
@@ -66,7 +71,7 @@ export default function ProductForm({
         onChange={(e) => handleChange(e.target.value, 'title')}
       />
       <labe>Photos</labe>
-      <div className="mb-2">
+      <div className="mb-2 flex flex-wrap gap-3">
         <label className="w-24 h-24 cursor-pointer text-center flex items-center justify-center gap-1 text-sm text-gray-500 rounded-lg bg-gray-200">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -85,6 +90,12 @@ export default function ProductForm({
           Upload
           <input type="file" onChange={uploadImages} className="hidden" />
         </label>
+        {!!images?.length &&
+          images.map((link) => (
+            <div key={link} className="h-24">
+              <img src={link} alt="photos" className="rounded-md" />
+            </div>
+          ))}
         {!images?.length && <div>No photos in this product</div>}
       </div>
       <label>Description</label>

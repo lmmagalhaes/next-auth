@@ -30,7 +30,6 @@ export default async function handle(req, res) {
     data.push(downloadURL)
   }
 
-  console.log('data', data)
   return res.send(data)
 }
 
