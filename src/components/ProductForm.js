@@ -1,7 +1,9 @@
 'use client'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import axios from 'axios'
+import { BounceLoader } from 'react-spinners'
+import { ReactSortable } from 'react-sortablejs'
 axios.defaults
 export default function ProductForm({
   _id,
@@ -16,6 +18,7 @@ export default function ProductForm({
     price: prevPrice || 0,
   })
   const [images, setImages] = useState(existingImages || [])
+  const [isUploading, setIsUploaing] = useState(false)
   const router = useRouter()
 
   const handleChange = (value, field) => {
@@ -25,6 +28,7 @@ export default function ProductForm({
   const uploadImages = async (e) => {
     const files = e.target.files
     if (files?.length > 0) {
+      setIsUploaing(true)
       const data = new FormData()
       for (const file of files) {
         data.append('file', file)
@@ -35,6 +39,7 @@ export default function ProductForm({
       setImages((oldImages) => {
         return [...oldImages, ...res.data]
       })
+      setIsUploaing(false)
     }
   }
 
@@ -61,6 +66,10 @@ export default function ProductForm({
     }
   }
 
+  function updateImagesOrder(images) {
+    setImages(images)
+  }
+
   return (
     <form onSubmit={handleSubmit}>
       <label>Product name</label>
@@ -70,7 +79,7 @@ export default function ProductForm({
         value={product.title}
         onChange={(e) => handleChange(e.target.value, 'title')}
       />
-      <labe>Photos</labe>
+      <label>Photos</label>
       <div className="mb-2 flex flex-wrap gap-3">
         <label className="w-24 h-24 cursor-pointer text-center flex items-center justify-center gap-1 text-sm text-gray-500 rounded-lg bg-gray-200">
           <svg
@@ -90,13 +99,23 @@ export default function ProductForm({
           Upload
           <input type="file" onChange={uploadImages} className="hidden" />
         </label>
-        {!!images?.length &&
-          images.map((link) => (
-            <div key={link} className="h-24">
-              <img src={link} alt="photos" className="rounded-md" />
-            </div>
-          ))}
-        {!images?.length && <div>No photos in this product</div>}
+        <ReactSortable
+          list={images}
+          className="flex flex-wrap gap-3"
+          setList={updateImagesOrder}
+        >
+          {!!images?.length &&
+            images.map((link) => (
+              <div key={link} className="h-24">
+                <img src={link} alt="photos" className="rounded-md" />
+              </div>
+            ))}
+        </ReactSortable>
+        {isUploading && (
+          <div className="h-24 p-1 flex items-center">
+            <BounceLoader color="#36d7b7" speedMultiplier={2} />
+          </div>
+        )}
       </div>
       <label>Description</label>
       <textarea

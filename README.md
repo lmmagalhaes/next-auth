@@ -43,3 +43,9 @@ https://www.youtube.com/watch?v=dTFXufTgfOE&t=9411s
 
 https://github.com/dejwid/ecommerce-admin
 https://github.com/dejwid/ecommerce-front
+
+# Link de ferramentas usadas no projeto.
+
+- https://account.mongodb.com/account/login?n=https%3A%2F%2Fcloud.mongodb.com%2Fv2%2F662657d0ee16e07af15d4c2b&nextHash=%23metrics%2FreplicaSet%2F66265b307d16d657bf4a69ee%2Fexplorer%2Ftest%2Fproducts%2Ffind&signedOut=true
+
+- https://console.firebase.google.com/u/4/project/next-ecommerce-study-8d544/storage/next-ecommerce-study-8d544.appspot.com/files/~2Fnewfiles~2Fnotes?hl=pt-br

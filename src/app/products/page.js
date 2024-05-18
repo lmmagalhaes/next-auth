@@ -27,11 +27,11 @@ export function Products() {
           </tr>
         </thead>
         <tbody>
-          {products.map((protuct) => (
-            <tr>
-              <td>{protuct.title}</td>
+          {products.map((product) => (
+            <tr key={product._id}>
+              <td>{product.title}</td>
               <td>
-                <Link href={'/products/edit/' + protuct._id}>
+                <Link href={'/products/edit/' + product._id}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -48,7 +48,7 @@ export function Products() {
                   </svg>
                   Edit
                 </Link>
-                <Link href={'/products/delete/' + protuct._id}>
+                <Link href={'/products/delete/' + product._id}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
